@@ -1,0 +1,12 @@
+platform: linux
+image: "docker:///perryl/perryl-concourse#latest"
+inputs:
+  - name: ybd
+params:
+  YBD_CACHE_SERVER:
+run:
+  path: bash
+  args:
+    - -c
+    - |
+      echo "kbas-url: $YBD_CACHE_SERVER" >> ybd/ybd.conf
