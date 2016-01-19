@@ -4,9 +4,11 @@ inputs:
   - name: ybd
 params:
   YBD_CACHE_SERVER:
+  YBD_CACHE_PASSWORD:
 run:
   path: bash
   args:
     - -c
     - |
       echo "kbas-url: $YBD_CACHE_SERVER" >> ybd/ybd.conf
+      echo "kbas-password: $YBD_CACHE_PASSWORD" >> ybd/ybd.conf
