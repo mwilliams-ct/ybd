@@ -100,17 +100,9 @@ def cache(defs, this):
     tempfile.tempdir = app.config['tmp']
     tmpdir = tempfile.mkdtemp()
     cachefile = os.path.join(tmpdir, cache_key(defs, this))
-    if this.get('kind') == "system":
-        utils.hardlink_all_files(this['install'], this['sandbox'])
-        shutil.rmtree(this['install'])
-        shutil.rmtree(this['build'])
-        utils.set_mtime_recursively(this['sandbox'])
-        utils.make_deterministic_tar_archive(cachefile, this['sandbox'])
-        os.rename('%s.tar' % cachefile, cachefile)
-    else:
-        utils.set_mtime_recursively(this['install'])
-        utils.make_deterministic_gztar_archive(cachefile, this['install'])
-        os.rename('%s.tar.gz' % cachefile, cachefile)
+    utils.set_mtime_recursively(this['install'])
+    utils.make_deterministic_gztar_archive(cachefile, this['install'])
+    os.rename('%s.tar.gz' % cachefile, cachefile)
 
     unpack(defs, this, cachefile)
 

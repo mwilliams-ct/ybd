@@ -80,32 +80,34 @@ def assemble(defs, target):
         for subsystem in system.get('subsystems', []):
             assemble(defs, subsystem)
 
-    dependencies = component.get('build-depends', [])
-    for it in dependencies:
-        preinstall(defs, component, it)
-
     contents = component.get('contents', [])
     random.shuffle(contents)
     for it in contents:
-        subcomponent = defs.get(it)
-        if subcomponent.get('build-mode', 'staging') != 'bootstrap':
-            preinstall(defs, component, subcomponent)
+        sub = defs.get(it)
+        assemble(defs, sub)
+        if sub.get('build-mode', 'staging') != 'bootstrap':
+            sandbox.install(defs, component, sub, component['install'])
 
     if 'systems' not in component and not get_cache(defs, component):
+        dependencies = component.get('build-depends', [])
+        for it in dependencies:
+            preinstall(defs, component, it)
+
         if app.config.get('instances', 1) > 1:
             with claim(defs, component):
                 # in here, exceptions get eaten
-                do_build(defs, component)
+                build_and_cache(defs, component)
         else:
             # in here, exceptions do not get eaten
-            do_build(defs, component)
+            build_and_cache(defs, component)
 
     app.remove_dir(component['sandbox'])
 
     return cache_key(defs, component)
 
 
-def do_build(defs, component):
+def build_and_cache(defs, component):
+    # build an individual component and create its artifact
     app.config['counter'].increment()
     with app.timer(component, 'build of %s' % component['cache']):
         build(defs, component)
@@ -154,11 +156,11 @@ def preinstall(defs, component, it):
             preinstall(defs, component, it)
 
     assemble(defs, dependency)
-    sandbox.install(defs, component, dependency)
+    sandbox.install(defs, component, dependency, component['sandbox'])
 
 
 def build(defs, this):
-    '''Actually create an artifact and add it to the cache
+    '''Build an artifact in a sandbox.
 
     This is what actually runs ./configure, make, make install (for example)
     By the time we get here, all dependencies for 'this' have been assembled.
