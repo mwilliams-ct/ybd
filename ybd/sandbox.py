@@ -55,20 +55,21 @@ def setup(this):
         call(['mkdir', '-p', os.path.join(assembly_dir, directory)])
 
 
-def install(defs, this, component):
-    # populate this['sandbox'] with the artifact files from component
-    if os.path.exists(os.path.join(this['sandbox'], 'baserock',
+def install(defs, this, component, targetdir=False):
+    # populate targetdir with the artifact files from component
+    targetdir = targetdir if targetdir else this['sandbox']
+    if os.path.exists(os.path.join(targetdir, 'baserock',
                                    component['name'] + '.meta')):
         return
     if app.config.get('log-verbose'):
-        app.log(this, 'Installing %s' % component['cache'])
+        app.log(this, 'Installing %s in' % component['cache'], targetdir)
     if cache.get_cache(defs, component) is False:
         app.exit(this, 'ERROR: unable to get cache for', component['name'])
     unpackdir = cache.get_cache(defs, component) + '.unpacked'
     if this.get('kind') is 'system':
-        utils.copy_all_files(unpackdir, this['sandbox'])
+        utils.copy_all_files(unpackdir, targetdir)
     else:
-        utils.hardlink_all_files(unpackdir, this['sandbox'])
+        utils.hardlink_all_files(unpackdir, targetdir)
 
 
 def ldconfig(this):
