@@ -76,7 +76,10 @@ def get_version(gitdir, ref='HEAD'):
 
 def get_tree(this):
     ref = this['ref']
-    gitdir = os.path.join(app.config['gits'], get_repo_name(this['repo']))
+    if app.config['concourse-user']:
+        gitdir = os.path.join(os.getcwd(), repo)
+    else:
+        gitdir = os.path.join(app.config['gits'], get_repo_name(repo))
     if this['repo'].startswith('file://') or this['repo'].startswith('/'):
         gitdir = this['repo'].replace('file://', '')
         if not os.path.isdir(gitdir):
@@ -141,7 +144,10 @@ def mirror(name, repo):
         if call(['git', 'rev-parse']):
             app.exit(name, 'ERROR: problem mirroring git repo at', tmpdir)
 
-    gitdir = os.path.join(app.config['gits'], get_repo_name(repo))
+    if app.config['concourse-user']:
+        gitdir = os.path.join(os.getcwd(), repo)
+    else:
+        gitdir = os.path.join(app.config['gits'], get_repo_name(repo))
     try:
         os.rename(tmpdir, gitdir)
         app.log(name, 'Git repo is mirrored at', gitdir)
@@ -169,7 +175,10 @@ def update_mirror(name, repo, gitdir):
 
 
 def checkout(name, repo, ref, checkout):
-    gitdir = os.path.join(app.config['gits'], get_repo_name(repo))
+    if app.config['concourse-user']:
+        gitdir = os.path.join(os.getcwd(), repo)
+    else:
+        gitdir = os.path.join(app.config['gits'], get_repo_name(repo))
     if not os.path.exists(gitdir):
         mirror(name, repo)
     elif not mirror_has_ref(gitdir, ref):
@@ -205,7 +214,10 @@ def extract_commit(name, repo, ref, target_dir):
     function is much quicker when you don't need to copy the whole repo into
     target_dir.
     '''
-    gitdir = os.path.join(app.config['gits'], get_repo_name(repo))
+    if app.config['concourse-user']:
+        gitdir = os.path.join(os.getcwd(), repo)
+    else:
+        gitdir = os.path.join(app.config['gits'], get_repo_name(repo))
     if not os.path.exists(gitdir):
         mirror(name, repo)
     elif not mirror_has_ref(gitdir, ref):
