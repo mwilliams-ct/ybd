@@ -77,7 +77,7 @@ def get_version(gitdir, ref='HEAD'):
 def get_tree(this):
     ref = this['ref']
     if app.config['concourse-user']:
-        gitdir = os.path.join(os.getcwd(),"..", this['name'])
+        gitdir = os.path.join(os.getcwd(), "..", this['name'])
         app.log(this['name'], 'in get_tree, concourse-user gitdir is'+gitdir, gitdir)
     else:
         gitdir = os.path.join(app.config['gits'], get_repo_name(repo))
@@ -147,7 +147,7 @@ def mirror(name, repo):
             app.exit(name, 'ERROR: problem mirroring git repo at', tmpdir)
 
     if app.config['concourse-user']:
-        gitdir = os.path.join(os.getcwd(), name)
+        gitdir = os.path.join(os.getcwd(), "..", name)
         app.log(name, 'in mirror, concourse-user gitdir is'+gitdir, gitdir)
     else:
         gitdir = os.path.join(app.config['gits'], get_repo_name(repo))
@@ -179,7 +179,7 @@ def update_mirror(name, repo, gitdir):
 
 def checkout(name, repo, ref, checkout):
     if app.config['concourse-user']:
-        gitdir = os.path.join(os.getcwd(), name)
+        gitdir = os.path.join(os.getcwd(), "..", name)
         app.log(name, 'in checkout, concourse-user gitdir is'+gitdir, gitdir)
     else:
         gitdir = os.path.join(app.config['gits'], get_repo_name(repo))
@@ -219,7 +219,7 @@ def extract_commit(name, repo, ref, target_dir):
     target_dir.
     '''
     if app.config['concourse-user']:
-        gitdir = os.path.join(os.getcwd(), name)
+        gitdir = os.path.join(os.getcwd(), "..", name)
         app.log(name, 'in extract_commit, concourse-user gitdir is'+gitdir, gitdir)
     else:
         gitdir = os.path.join(app.config['gits'], get_repo_name(repo))
