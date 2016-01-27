@@ -77,7 +77,7 @@ def get_version(gitdir, ref='HEAD'):
 def get_tree(this):
     ref = this['ref']
     if app.config['concourse-user']:
-        gitdir = os.path.join(os.getcwd(), this['name'])
+        gitdir = os.path.join(os.getcwd(),"..", this['name'])
         app.log(this['name'], 'in get_tree, concourse-user gitdir is'+gitdir, gitdir)
     else:
         gitdir = os.path.join(app.config['gits'], get_repo_name(repo))
@@ -87,7 +87,7 @@ def get_tree(this):
             app.exit(this, 'ERROR: git repo not found:', this['repo'])
 
     if not os.path.exists(gitdir):
-        app.log(name, 'in get_tree, concourse-user gitdir is'+gitdir, gitdir)
+        app.log(this['name'], 'in get_tree, concourse-user gitdir is'+gitdir, gitdir)
         try:
             url = (app.config['tree-server'] + 'repo=' +
                    get_repo_url(this['repo']) + '&ref=' + ref)
