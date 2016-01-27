@@ -78,7 +78,7 @@ def get_tree(this):
     ref = this['ref']
     if app.config['concourse-user']:
         gitdir = os.path.join(os.getcwd(), this['name'])
-        app.log(name, 'in get_tree, concourse-user gitdir is'+gitdir, gitdir)
+        app.log(this['name'], 'in get_tree, concourse-user gitdir is'+gitdir, gitdir)
     else:
         gitdir = os.path.join(app.config['gits'], get_repo_name(repo))
     if this['repo'].startswith('file://') or this['repo'].startswith('/'):
