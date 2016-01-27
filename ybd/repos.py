@@ -78,6 +78,7 @@ def get_tree(this):
     ref = this['ref']
     if app.config['concourse-user']:
         gitdir = os.path.join(os.getcwd(), this['name'])
+        app.log(name, 'in get_tree, concourse-user gitdir is'+gitdir, gitdir)
     else:
         gitdir = os.path.join(app.config['gits'], get_repo_name(repo))
     if this['repo'].startswith('file://') or this['repo'].startswith('/'):
@@ -86,6 +87,7 @@ def get_tree(this):
             app.exit(this, 'ERROR: git repo not found:', this['repo'])
 
     if not os.path.exists(gitdir):
+        app.log(name, 'in get_tree, concourse-user gitdir is'+gitdir, gitdir)
         try:
             url = (app.config['tree-server'] + 'repo=' +
                    get_repo_url(this['repo']) + '&ref=' + ref)
@@ -146,6 +148,7 @@ def mirror(name, repo):
 
     if app.config['concourse-user']:
         gitdir = os.path.join(os.getcwd(), name)
+        app.log(name, 'in mirror, concourse-user gitdir is'+gitdir, gitdir)
     else:
         gitdir = os.path.join(app.config['gits'], get_repo_name(repo))
     try:
@@ -177,6 +180,7 @@ def update_mirror(name, repo, gitdir):
 def checkout(name, repo, ref, checkout):
     if app.config['concourse-user']:
         gitdir = os.path.join(os.getcwd(), name)
+        app.log(name, 'in checkout, concourse-user gitdir is'+gitdir, gitdir)
     else:
         gitdir = os.path.join(app.config['gits'], get_repo_name(repo))
     if not os.path.exists(gitdir):
@@ -216,9 +220,11 @@ def extract_commit(name, repo, ref, target_dir):
     '''
     if app.config['concourse-user']:
         gitdir = os.path.join(os.getcwd(), name)
+        app.log(name, 'in extract_commit, concourse-user gitdir is'+gitdir, gitdir)
     else:
         gitdir = os.path.join(app.config['gits'], get_repo_name(repo))
     if not os.path.exists(gitdir):
+        app.log(name, 'in extract_commit, concourse-user gitdir does not exist '+gitdir, gitdir)
         mirror(name, repo)
     elif not mirror_has_ref(gitdir, ref):
         update_mirror(name, repo, gitdir)
