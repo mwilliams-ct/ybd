@@ -1,12 +1,12 @@
 platform: linux
-image: "docker:///perryl/perryl-concourse#latest"
+image: "docker:///busybox"
 inputs:
   - name: ybd
 params:
   YBD_CACHE_SERVER:
   YBD_CACHE_PASSWORD:
 run:
-  path: bash
+  path: sh
   args:
     - -c
     - |
