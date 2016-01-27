@@ -1,5 +1,5 @@
 platform: linux
-image: "docker:///perryl/perryl-concourse#latest"
+image: "docker:///busybox"
 inputs:
   - name: ybd
 params:
