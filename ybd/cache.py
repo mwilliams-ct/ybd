@@ -48,6 +48,7 @@ def cache_key(defs, this):
     definition['cache'] = 'calculating'
 
     if definition.get('repo') and not definition.get('tree'):
+        print definition
         definition['tree'] = repos.get_tree(definition)
 
     hash_factors = {'arch': app.config['arch']}
